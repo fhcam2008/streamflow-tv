@@ -4,345 +4,178 @@
 <meta charset="UTF-8">
 <title>StreamFlow TV</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Syne+Mono&display=swap');
-
-:root {
-  --bg0:#060a10; --bg1:#0b1018; --bg2:#111820; --bg3:#18222e;
-  --ac1:#e8c96d;   /* gold */
-  --ac2:#5bc4e8;   /* cyan */
-  --ac3:#e8726d;   /* coral */
-  --ac4:#7de87a;   /* green */
-  --txt1:#f0e8d8; --txt2:#8a9db8; --txt3:#374455;
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap');
+:root{
+  --bg0:#060a10;--bg1:#0b1018;--bg2:#111820;--bg3:#18222e;
+  --ac1:#e8c96d;--ac2:#5bc4e8;--ac3:#e8726d;--ac4:#7de87a;
+  --txt1:#f0e8d8;--txt2:#8a9db8;--txt3:#374455;
   --bdr:rgba(232,201,109,0.12);
-  --glow1:0 0 24px rgba(232,201,109,0.25);
-  --glow2:0 0 24px rgba(91,196,232,0.25);
-  --r:10px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;background:var(--bg0);color:var(--txt1);
-  font-family:'Syne',sans-serif;overflow:hidden;user-select:none;}
+html,body{width:100%;height:100%;background:var(--bg0);color:var(--txt1);font-family:'Syne',sans-serif;overflow:hidden;user-select:none;}
 
-/* ── BOOT ── */
-#boot{position:fixed;inset:0;z-index:9999;background:var(--bg0);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
-.boot-logo{font-size:52px;font-weight:800;letter-spacing:6px;color:var(--ac1);
-  text-shadow:var(--glow1);}
-.boot-logo em{color:var(--ac2);font-style:normal;}
-.boot-track{width:280px;height:2px;background:var(--bg3);border-radius:1px;overflow:hidden;}
-.boot-fill{height:100%;width:0;background:linear-gradient(90deg,var(--ac1),var(--ac2));
-  border-radius:1px;transition:width .25s ease;}
-.boot-msg{font-size:11px;letter-spacing:3px;color:var(--txt2);}
+#shell{width:100%;height:100%;display:flex;flex-direction:column;}
 
-/* ── SHELL ── */
-#shell{display:none;width:100%;height:100%;flex-direction:column;}
-
-/* ── TOPBAR ── */
-#topbar{height:58px;flex-shrink:0;background:rgba(6,10,16,.97);
-  border-bottom:1px solid var(--bdr);
-  display:flex;align-items:center;padding:0 28px;gap:0;z-index:200;}
-.t-logo{font-size:19px;font-weight:800;letter-spacing:4px;color:var(--ac1);margin-right:28px;}
+#topbar{height:54px;flex-shrink:0;background:rgba(6,10,16,.97);border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 24px;gap:0;}
+.t-logo{font-size:18px;font-weight:800;letter-spacing:4px;color:var(--ac1);margin-right:24px;}
 .t-logo em{color:var(--ac2);font-style:normal;}
 .t-nav{display:flex;gap:4px;}
-.t-tab{padding:7px 18px;border-radius:6px;font-size:13px;font-weight:600;
-  letter-spacing:1.5px;cursor:pointer;transition:all .2s;color:var(--txt2);
-  border:1px solid transparent;}
+.t-tab{padding:7px 16px;border-radius:6px;font-size:12px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all .2s;color:var(--txt2);border:1px solid transparent;}
 .t-tab:hover{color:var(--txt1);background:var(--bg3);}
 .t-tab.on{color:var(--ac1);border-color:rgba(232,201,109,.3);background:rgba(232,201,109,.07);}
-.t-sep{width:1px;height:24px;background:var(--bdr);margin:0 12px;}
 .t-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
-.t-clock{font-family:'Syne Mono';font-size:15px;color:var(--txt2);}
-.t-icon{width:34px;height:34px;border-radius:7px;background:var(--bg2);
-  border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:16px;transition:all .2s;}
-.t-icon:hover{background:var(--bg3);border-color:var(--ac1);color:var(--ac1);}
-.t-sync-btn{padding:7px 16px;border-radius:6px;font-size:12px;font-weight:700;
-  letter-spacing:2px;background:rgba(91,196,232,.12);border:1px solid rgba(91,196,232,.35);
-  color:var(--ac2);cursor:pointer;transition:all .2s;}
-.t-sync-btn:hover{background:rgba(91,196,232,.22);}
-.t-sync-btn.spinning{animation:spin .8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
+.t-clock{font-size:14px;color:var(--txt2);}
+.t-btn{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:1.5px;background:rgba(91,196,232,.12);border:1px solid rgba(91,196,232,.35);color:var(--ac2);cursor:pointer;}
 
-/* ── VIEWS ── */
 .view{display:none;flex:1;overflow:hidden;}
 .view.on{display:flex;}
 
-/* ══════════════════════════════════
-   LIVE TV
-══════════════════════════════════ */
+/* LIVE */
 #liveView{flex-direction:row;}
-#sidebar{width:272px;flex-shrink:0;background:var(--bg1);
-  border-right:1px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden;}
-.sb-top{padding:10px 12px;border-bottom:1px solid var(--bdr);display:flex;flex-direction:column;gap:8px;}
-.sb-search{display:flex;align-items:center;gap:8px;background:var(--bg2);
-  border:1px solid var(--bdr);border-radius:7px;padding:7px 10px;}
-.sb-search input{flex:1;background:none;border:none;color:var(--txt1);
-  font-family:'Syne';font-size:13px;outline:none;}
+#sidebar{width:260px;flex-shrink:0;background:var(--bg1);border-right:1px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden;}
+.sb-top{padding:10px;border-bottom:1px solid var(--bdr);}
+.sb-search{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--bdr);border-radius:7px;padding:7px 10px;}
+.sb-search input{flex:1;background:none;border:none;color:var(--txt1);font-family:'Syne';font-size:13px;outline:none;}
 .sb-search input::placeholder{color:var(--txt3);}
-.sb-groups{display:flex;gap:5px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;}
-.sb-groups::-webkit-scrollbar{height:2px;}
-.sb-groups::-webkit-scrollbar-thumb{background:var(--ac1);border-radius:1px;}
-.grp-chip{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;
-  letter-spacing:.5px;white-space:nowrap;cursor:pointer;border:1px solid var(--bdr);
-  color:var(--txt2);transition:all .15s;}
+#grpList{display:flex;gap:4px;flex-wrap:nowrap;overflow-x:auto;padding:8px 10px;border-bottom:1px solid var(--bdr);}
+#grpList::-webkit-scrollbar{height:2px;}
+.grp-chip{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;border:1px solid var(--bdr);color:var(--txt2);}
 .grp-chip.on{background:var(--ac1);color:#000;border-color:var(--ac1);}
-.grp-chip:hover:not(.on){border-color:var(--ac1);color:var(--ac1);}
 #chList{flex:1;overflow-y:auto;padding:6px;}
 #chList::-webkit-scrollbar{width:3px;}
-#chList::-webkit-scrollbar-thumb{background:var(--txt3);border-radius:2px;}
-.ch-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;
-  cursor:pointer;border:1px solid transparent;transition:all .15s;}
+.ch-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;cursor:pointer;border:1px solid transparent;}
 .ch-row:hover{background:var(--bg3);}
 .ch-row.on{background:rgba(232,201,109,.07);border-color:rgba(232,201,109,.3);}
 .ch-row.on .ch-name{color:var(--ac1);}
-.ch-num{font-family:'Syne Mono';font-size:10px;color:var(--txt3);width:24px;text-align:right;}
-.ch-logo{width:34px;height:24px;border-radius:4px;background:var(--bg3);flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:10px;overflow:hidden;}
+.ch-num{font-size:10px;color:var(--txt3);width:22px;text-align:right;}
+.ch-logo{width:32px;height:22px;border-radius:3px;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;overflow:hidden;}
 .ch-logo img{width:100%;height:100%;object-fit:contain;}
 .ch-name{flex:1;font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ch-live{width:6px;height:6px;border-radius:50%;background:var(--ac3);flex-shrink:0;
-  animation:blink 2s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
 
-/* Player */
 #playerArea{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;}
 #vWrap{flex:1;position:relative;background:#000;min-height:0;}
 #vid{width:100%;height:100%;object-fit:contain;}
-#noSig{position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:10px;background:#000;}
-.ns-ic{font-size:44px;opacity:.2;}
+#noSig{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#000;}
+.ns-ic{font-size:40px;opacity:.2;}
 .ns-tx{font-size:13px;letter-spacing:3px;color:var(--txt3);}
-#osd{position:absolute;bottom:0;left:0;right:0;padding:20px 28px 18px;
-  background:linear-gradient(0deg,rgba(6,10,16,.96),transparent);
-  opacity:0;pointer-events:none;transition:opacity .3s;}
+#osd{position:absolute;bottom:0;left:0;right:0;padding:18px 24px 16px;background:linear-gradient(0deg,rgba(6,10,16,.96),transparent);opacity:0;pointer-events:none;transition:opacity .3s;}
 #osd.show{opacity:1;}
-.osd-name{font-size:26px;font-weight:800;letter-spacing:2px;}
-.osd-sub{font-size:12px;color:var(--txt2);margin-top:3px;font-family:'Syne Mono';}
-.osd-acts{display:flex;gap:8px;margin-top:14px;}
-.osd-act{padding:7px 18px;border-radius:6px;font-size:12px;font-weight:700;
-  letter-spacing:1.5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
-  color:var(--txt1);cursor:pointer;transition:all .2s;}
-.osd-act:hover{background:var(--ac1);color:#000;border-color:var(--ac1);}
-#epgBar{height:66px;flex-shrink:0;background:var(--bg1);border-top:1px solid var(--bdr);
-  display:flex;align-items:center;padding:0 14px;gap:8px;overflow:hidden;}
-.epg-lbl{font-size:9px;letter-spacing:2px;color:var(--txt3);margin-right:4px;}
-.epg-card{padding:7px 12px;border-radius:7px;background:var(--bg2);
-  border:1px solid var(--bdr);flex-shrink:0;min-width:140px;}
-.epg-card.now{border-color:rgba(232,201,109,.4);}
-.epg-card-t{font-size:12px;font-weight:600;}
-.epg-card-s{font-size:10px;color:var(--txt3);font-family:'Syne Mono';margin-top:2px;}
+.osd-name{font-size:24px;font-weight:800;}
+.osd-sub{font-size:11px;color:var(--txt2);margin-top:3px;}
 
-/* ══════════════════════════════════
-   VOD
-══════════════════════════════════ */
+/* VOD */
 #vodView{flex-direction:column;overflow:hidden;}
-#vodTop{flex-shrink:0;display:flex;gap:0;background:var(--bg1);
-  border-bottom:1px solid var(--bdr);padding:10px 20px;
-  align-items:center;gap:12px;overflow-x:auto;}
+#vodTop{flex-shrink:0;display:flex;gap:6px;background:var(--bg1);border-bottom:1px solid var(--bdr);padding:10px 16px;overflow-x:auto;}
 #vodTop::-webkit-scrollbar{height:2px;}
-#vodTop::-webkit-scrollbar-thumb{background:var(--ac1);}
-.vcat{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;
-  letter-spacing:1px;cursor:pointer;border:1px solid var(--bdr);color:var(--txt2);
-  white-space:nowrap;transition:all .15s;}
+.vcat{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;letter-spacing:1px;cursor:pointer;border:1px solid var(--bdr);color:var(--txt2);white-space:nowrap;}
 .vcat.on{background:rgba(232,201,109,.1);border-color:var(--ac1);color:var(--ac1);}
-.vcat:hover:not(.on){color:var(--txt1);}
-.vod-search-wrap{margin-left:auto;flex-shrink:0;display:flex;align-items:center;
-  gap:7px;background:var(--bg2);border:1px solid var(--bdr);border-radius:7px;padding:6px 10px;}
-.vod-search-wrap input{background:none;border:none;color:var(--txt1);
-  font-family:'Syne';font-size:13px;outline:none;width:180px;}
-.vod-search-wrap input::placeholder{color:var(--txt3);}
-
-/* Grid */
-#vodBody{flex:1;overflow-y:auto;padding:20px 24px;}
-#vodBody::-webkit-scrollbar{width:4px;}
-#vodBody::-webkit-scrollbar-thumb{background:var(--txt3);border-radius:2px;}
-#vodGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:16px;}
-.v-card{border-radius:var(--r);overflow:hidden;background:var(--bg2);
-  border:1px solid var(--bdr);cursor:pointer;transition:all .22s;position:relative;}
-.v-card:hover{transform:translateY(-5px) scale(1.015);
-  border-color:rgba(232,201,109,.5);box-shadow:0 12px 32px rgba(0,0,0,.6),var(--glow1);}
-.v-poster{width:100%;height:230px;position:relative;background:var(--bg3);
-  overflow:hidden;display:flex;align-items:center;justify-content:center;}
-.v-poster img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
-.v-card:hover .v-poster img{transform:scale(1.05);}
-.v-poster-fallback{font-size:48px;opacity:.25;}
-.v-overlay{position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 45%,rgba(6,10,16,.95) 100%);
-  opacity:0;transition:opacity .2s;}
-.v-card:hover .v-overlay{opacity:1;}
-.v-play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:48px;height:48px;border-radius:50%;background:rgba(232,201,109,.9);
-  display:flex;align-items:center;justify-content:center;font-size:20px;color:#000;
-  opacity:0;transition:opacity .2s;}
-.v-card:hover .v-play-btn{opacity:1;}
-.v-rating{position:absolute;top:8px;left:8px;padding:3px 7px;border-radius:5px;
-  font-size:10px;font-weight:700;background:rgba(232,201,109,.9);color:#000;}
-.v-badges{position:absolute;top:8px;right:8px;display:flex;flex-direction:column;gap:3px;align-items:flex-end;}
-.v-badge{padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.5px;}
-.v-badge.hd{background:rgba(91,196,232,.2);color:var(--ac2);border:1px solid rgba(91,196,232,.4);}
-.v-badge.new{background:rgba(232,114,109,.2);color:var(--ac3);border:1px solid rgba(232,114,109,.4);}
-.v-body{padding:10px 12px;}
-.v-title{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.v-meta{font-size:10px;color:var(--txt2);margin-top:3px;}
-.v-desc{font-size:10px;color:var(--txt3);margin-top:4px;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-
-/* Sync progress */
-#vodSyncBar{display:none;padding:10px 24px;background:rgba(91,196,232,.05);
-  border-bottom:1px solid rgba(91,196,232,.15);align-items:center;gap:12px;flex-shrink:0;}
+#vodSyncBar{display:none;padding:8px 16px;background:rgba(91,196,232,.05);border-bottom:1px solid rgba(91,196,232,.15);align-items:center;gap:10px;flex-shrink:0;}
 #vodSyncBar.show{display:flex;}
-.vsb-icon{font-size:16px;animation:spin .8s linear infinite;}
-.vsb-text{font-size:12px;color:var(--ac2);letter-spacing:1px;}
+.vsb-text{font-size:11px;color:var(--ac2);letter-spacing:1px;}
 .vsb-prog{flex:1;height:2px;background:var(--bg3);border-radius:1px;overflow:hidden;}
 .vsb-fill{height:100%;background:var(--ac2);border-radius:1px;transition:width .3s;}
-.vsb-count{font-family:'Syne Mono';font-size:11px;color:var(--txt2);}
+.vsb-count{font-size:11px;color:var(--txt2);}
+#vodBody{flex:1;overflow-y:auto;padding:16px 20px;}
+#vodBody::-webkit-scrollbar{width:4px;}
+#vodGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;}
+.v-card{border-radius:8px;overflow:hidden;background:var(--bg2);border:1px solid var(--bdr);cursor:pointer;transition:all .2s;position:relative;}
+.v-card:hover{transform:translateY(-4px);border-color:rgba(232,201,109,.5);}
+.v-poster{width:100%;height:220px;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+.v-poster img{width:100%;height:100%;object-fit:cover;}
+.v-poster-fb{font-size:40px;opacity:.2;}
+.v-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgba(232,201,109,.9);display:flex;align-items:center;justify-content:center;font-size:18px;color:#000;opacity:0;transition:opacity .2s;}
+.v-card:hover .v-play{opacity:1;}
+.v-rating{position:absolute;top:6px;left:6px;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;background:rgba(232,201,109,.9);color:#000;}
+.v-body{padding:8px 10px;}
+.v-title{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.v-meta{font-size:10px;color:var(--txt2);margin-top:2px;}
 
-/* Detail modal */
-#detailModal{position:fixed;inset:0;z-index:800;background:rgba(6,10,16,.92);
-  display:none;align-items:center;justify-content:center;padding:40px;}
-#detailModal.open{display:flex;}
-.detail-box{width:760px;max-height:90vh;background:var(--bg2);border-radius:14px;
-  border:1px solid var(--bdr);overflow:hidden;display:flex;flex-direction:column;}
-.detail-top{display:flex;gap:0;position:relative;}
-.detail-poster{width:220px;flex-shrink:0;height:320px;object-fit:cover;background:var(--bg3);}
-.detail-poster-fb{width:220px;flex-shrink:0;height:320px;background:var(--bg3);
-  display:flex;align-items:center;justify-content:center;font-size:60px;opacity:.3;}
-.detail-info{flex:1;padding:28px;display:flex;flex-direction:column;gap:10px;min-width:0;}
-.detail-badges{display:flex;gap:8px;flex-wrap:wrap;}
-.detail-badge{padding:3px 10px;border-radius:5px;font-size:10px;font-weight:700;letter-spacing:1px;}
-.db-cat{background:rgba(232,201,109,.1);border:1px solid rgba(232,201,109,.3);color:var(--ac1);}
-.db-year{background:var(--bg3);border:1px solid var(--bdr);color:var(--txt2);}
-.db-rating{background:rgba(125,232,122,.1);border:1px solid rgba(125,232,122,.3);color:var(--ac4);}
-.detail-title{font-size:26px;font-weight:800;letter-spacing:1px;line-height:1.2;}
-.detail-cast{font-size:11px;color:var(--txt2);line-height:1.6;}
-.detail-plot{font-size:12px;color:var(--txt2);line-height:1.7;flex:1;overflow-y:auto;}
-.detail-plot::-webkit-scrollbar{width:2px;}
-.detail-plot::-webkit-scrollbar-thumb{background:var(--txt3);}
-.detail-acts{display:flex;gap:10px;margin-top:auto;padding-top:12px;}
-.da-play{padding:11px 28px;border-radius:7px;background:var(--ac1);color:#000;
-  font-family:'Syne';font-size:13px;font-weight:800;letter-spacing:2px;cursor:pointer;
-  border:none;transition:all .2s;}
-.da-play:hover{filter:brightness(1.1);transform:translateY(-1px);}
-.da-close{padding:11px 20px;border-radius:7px;background:var(--bg3);color:var(--txt1);
-  font-family:'Syne';font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;
-  border:1px solid var(--bdr);transition:all .2s;}
-.da-close:hover{border-color:var(--ac3);color:var(--ac3);}
-.detail-stream-info{font-size:10px;color:var(--txt3);font-family:'Syne Mono';margin-top:6px;}
-
-/* ══════════════════════════════════
-   SOURCE (M3U + Xtream)
-══════════════════════════════════ */
+/* SOURCE */
 #srcView{flex-direction:column;align-items:center;justify-content:center;overflow-y:auto;}
-.src-wrap{width:600px;display:flex;flex-direction:column;gap:16px;padding:40px 0;}
-.src-panel{background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;
-  padding:32px;position:relative;overflow:hidden;}
+.src-wrap{width:560px;display:flex;flex-direction:column;gap:14px;padding:30px 0;}
+.src-panel{background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:28px;position:relative;overflow:hidden;}
 .src-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .src-panel.xtream::before{background:linear-gradient(90deg,var(--ac1),var(--ac2));}
 .src-panel.m3u::before{background:linear-gradient(90deg,var(--ac2),var(--ac4));}
-.src-panel h3{font-size:18px;font-weight:800;letter-spacing:2px;margin-bottom:4px;}
-.src-panel p{font-size:12px;color:var(--txt2);margin-bottom:22px;}
+.src-panel h3{font-size:16px;font-weight:800;letter-spacing:2px;margin-bottom:4px;}
+.src-panel p{font-size:11px;color:var(--txt2);margin-bottom:18px;}
 .src-row{display:flex;gap:10px;margin-bottom:10px;}
-.src-field{flex:1;display:flex;flex-direction:column;gap:5px;}
-.src-lbl{font-size:10px;letter-spacing:2px;color:var(--txt3);}
-.src-in{width:100%;padding:10px 13px;border-radius:7px;background:var(--bg1);
-  border:1px solid var(--bdr);color:var(--txt1);font-family:'Syne';font-size:13px;outline:none;
-  transition:border-color .2s;}
+.src-field{flex:1;display:flex;flex-direction:column;gap:4px;}
+.src-lbl{font-size:9px;letter-spacing:2px;color:var(--txt3);}
+.src-in{width:100%;padding:9px 12px;border-radius:7px;background:var(--bg1);border:1px solid var(--bdr);color:var(--txt1);font-family:'Syne';font-size:13px;outline:none;}
 .src-in:focus{border-color:var(--ac1);}
 .src-in::placeholder{color:var(--txt3);}
-.src-btn{width:100%;margin-top:14px;padding:13px;border-radius:7px;
-  font-family:'Syne';font-size:13px;font-weight:800;letter-spacing:2px;
-  cursor:pointer;border:none;transition:all .2s;}
+.src-btn{width:100%;margin-top:12px;padding:12px;border-radius:7px;font-family:'Syne';font-size:13px;font-weight:800;letter-spacing:2px;cursor:pointer;border:none;}
 .src-btn.xtream{background:linear-gradient(135deg,var(--ac1),#c8a84d);color:#000;}
 .src-btn.m3u{background:linear-gradient(135deg,var(--ac2),#3a9cb8);color:#000;}
-.src-btn:hover{filter:brightness(1.08);transform:translateY(-1px);}
-.src-divider{display:flex;align-items:center;gap:10px;margin:6px 0;
-  color:var(--txt3);font-size:10px;letter-spacing:2px;}
+.src-divider{display:flex;align-items:center;gap:10px;margin:6px 0;color:var(--txt3);font-size:10px;letter-spacing:2px;}
 .src-divider::before,.src-divider::after{content:'';flex:1;height:1px;background:var(--bdr);}
-.file-btn{width:100%;padding:10px;border-radius:7px;background:var(--bg1);
-  border:2px dashed var(--bdr);color:var(--txt2);font-family:'Syne';font-size:12px;
-  cursor:pointer;text-align:center;transition:all .2s;}
-.file-btn:hover{border-color:var(--ac2);color:var(--ac2);}
+.file-btn{width:100%;padding:10px;border-radius:7px;background:var(--bg1);border:2px dashed var(--bdr);color:var(--txt2);font-family:'Syne';font-size:12px;cursor:pointer;text-align:center;}
 #fileIn{display:none;}
-.recent-sect{margin-top:8px;}
-.recent-lbl{font-size:10px;letter-spacing:2px;color:var(--txt3);margin-bottom:8px;}
-.recent-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:7px;
-  cursor:pointer;border:1px solid transparent;transition:all .15s;}
-.recent-row:hover{background:var(--bg3);border-color:var(--bdr);}
-.recent-ic{color:var(--ac1);font-size:14px;}
-.recent-url{flex:1;font-size:12px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.recent-tag{font-size:10px;color:var(--txt3);background:var(--bg3);
-  padding:2px 7px;border-radius:4px;font-family:'Syne Mono';}
 
-/* ══════════════════════════════════
-   SETTINGS
-══════════════════════════════════ */
-#setView{flex-direction:column;align-items:center;overflow-y:auto;padding:30px 0;}
-.set-wrap{width:580px;display:flex;flex-direction:column;gap:6px;}
-.set-sec{font-size:9px;letter-spacing:3px;color:var(--txt3);padding:14px 8px 6px;}
-.set-row{display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px;border-radius:9px;background:var(--bg2);border:1px solid var(--bdr);
-  cursor:pointer;transition:all .15s;}
-.set-row:hover{background:var(--bg3);border-color:rgba(232,201,109,.3);}
+/* SETTINGS */
+#setView{flex-direction:column;align-items:center;overflow-y:auto;padding:24px 0;}
+.set-wrap{width:540px;display:flex;flex-direction:column;gap:5px;}
+.set-sec{font-size:9px;letter-spacing:3px;color:var(--txt3);padding:12px 8px 5px;}
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:8px;background:var(--bg2);border:1px solid var(--bdr);cursor:pointer;}
+.set-row:hover{background:var(--bg3);}
 .set-left{display:flex;flex-direction:column;gap:2px;}
-.set-name{font-size:14px;font-weight:600;}
-.set-desc{font-size:11px;color:var(--txt3);}
-.set-val{font-size:12px;color:var(--ac1);font-family:'Syne Mono';}
-.tog{width:42px;height:22px;border-radius:11px;background:var(--txt3);position:relative;transition:background .25s;}
+.set-name{font-size:13px;font-weight:600;}
+.set-desc{font-size:10px;color:var(--txt3);}
+.set-val{font-size:11px;color:var(--ac1);}
+.tog{width:40px;height:20px;border-radius:10px;background:var(--txt3);position:relative;transition:background .25s;}
 .tog.on{background:var(--ac1);}
-.tog::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;
-  border-radius:8px;background:#fff;transition:left .25s;}
+.tog::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:7px;background:#fff;transition:left .25s;}
 .tog.on::after{left:23px;}
 
-/* ══════════════════════════════════
-   SEARCH MODAL
-══════════════════════════════════ */
-#srchModal{position:fixed;inset:0;z-index:900;background:rgba(6,10,16,.9);
-  display:none;align-items:flex-start;justify-content:center;padding-top:80px;}
+/* DETAIL */
+#detailModal{position:fixed;inset:0;z-index:800;background:rgba(6,10,16,.92);display:none;align-items:center;justify-content:center;padding:30px;}
+#detailModal.open{display:flex;}
+.detail-box{width:700px;max-height:88vh;background:var(--bg2);border-radius:12px;border:1px solid var(--bdr);overflow:hidden;display:flex;flex-direction:column;}
+.detail-top{display:flex;}
+.detail-poster{width:200px;flex-shrink:0;height:300px;object-fit:cover;background:var(--bg3);}
+.detail-poster-fb{width:200px;flex-shrink:0;height:300px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:50px;opacity:.3;}
+.detail-info{flex:1;padding:24px;display:flex;flex-direction:column;gap:8px;min-width:0;}
+.detail-badges{display:flex;gap:6px;flex-wrap:wrap;}
+.d-badge{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:1px;}
+.db-cat{background:rgba(232,201,109,.1);border:1px solid rgba(232,201,109,.3);color:var(--ac1);}
+.db-year{background:var(--bg3);border:1px solid var(--bdr);color:var(--txt2);}
+.db-rat{background:rgba(125,232,122,.1);border:1px solid rgba(125,232,122,.3);color:var(--ac4);}
+.detail-title{font-size:22px;font-weight:800;line-height:1.2;}
+.detail-cast{font-size:11px;color:var(--txt2);line-height:1.6;}
+.detail-plot{font-size:11px;color:var(--txt2);line-height:1.7;flex:1;overflow-y:auto;}
+.detail-acts{display:flex;gap:8px;margin-top:auto;padding-top:10px;}
+.da-play{padding:10px 24px;border-radius:7px;background:var(--ac1);color:#000;font-family:'Syne';font-size:12px;font-weight:800;letter-spacing:2px;cursor:pointer;border:none;}
+.da-close{padding:10px 18px;border-radius:7px;background:var(--bg3);color:var(--txt1);font-family:'Syne';font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--bdr);}
+
+/* SEARCH */
+#srchModal{position:fixed;inset:0;z-index:900;background:rgba(6,10,16,.9);display:none;align-items:flex-start;justify-content:center;padding-top:70px;}
 #srchModal.open{display:flex;}
-.srch-box{width:580px;background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;overflow:hidden;}
-.srch-in-row{display:flex;align-items:center;gap:10px;padding:14px 18px;
-  border-bottom:1px solid var(--bdr);}
-.srch-in{flex:1;background:none;border:none;color:var(--txt1);
-  font-family:'Syne';font-size:18px;font-weight:600;outline:none;}
+.srch-box{width:540px;background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;overflow:hidden;}
+.srch-in-row{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--bdr);}
+.srch-in{flex:1;background:none;border:none;color:var(--txt1);font-family:'Syne';font-size:16px;font-weight:600;outline:none;}
 .srch-in::placeholder{color:var(--txt3);}
-#srchRes{max-height:340px;overflow-y:auto;}
-.sr-row{display:flex;align-items:center;gap:12px;padding:11px 18px;cursor:pointer;
-  border-bottom:1px solid var(--bdr);transition:background .12s;}
+#srchRes{max-height:320px;overflow-y:auto;}
+.sr-row{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;border-bottom:1px solid var(--bdr);}
 .sr-row:hover{background:var(--bg3);}
-.sr-type{padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:1px;}
+.sr-type{padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:1px;}
 .sr-type.live{background:rgba(91,196,232,.15);color:var(--ac2);}
 .sr-type.vod{background:rgba(232,201,109,.15);color:var(--ac1);}
-.sr-name{font-size:14px;font-weight:600;flex:1;}
-.sr-grp{font-size:11px;color:var(--txt3);}
+.sr-name{font-size:13px;font-weight:600;flex:1;}
+.sr-grp{font-size:10px;color:var(--txt3);}
 
-/* ── NOTIF ── */
-#notif{position:fixed;top:68px;right:20px;z-index:999;
-  background:var(--bg2);border:1px solid var(--bdr);border-radius:9px;
-  padding:10px 18px;display:flex;align-items:center;gap:9px;
-  transform:translateX(130%);transition:transform .3s ease;max-width:340px;}
+#notif{position:fixed;top:62px;right:16px;z-index:999;background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;padding:9px 16px;display:flex;align-items:center;gap:8px;transform:translateX(130%);transition:transform .3s ease;max-width:300px;}
 #notif.show{transform:translateX(0);}
-.notif-ic{font-size:16px;}
-.notif-tx{font-size:13px;color:var(--txt1);}
+.n-ic{font-size:14px;}
+.n-tx{font-size:12px;}
 
-/* ── EMPTY ── */
-.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:60px;gap:10px;color:var(--txt3);}
-.empty-ic{font-size:40px;opacity:.3;}
-.empty-tx{font-size:13px;letter-spacing:2px;}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px;gap:8px;color:var(--txt3);}
+.empty-ic{font-size:36px;opacity:.3;}
+.empty-tx{font-size:12px;letter-spacing:2px;}
 </style>
 </head>
 <body>
-
-<!-- BOOT -->
-<div id="boot">
-  <div class="boot-logo">STREAM<em>FLOW</em></div>
-  <div class="boot-track"><div class="boot-fill" id="bFill"></div></div>
-  <div class="boot-msg" id="bMsg">BAŞLATILIYOR...</div>
-</div>
-
-<!-- SHELL -->
 <div id="shell">
-
-  <!-- TOPBAR -->
   <div id="topbar">
     <div class="t-logo">STREAM<em>FLOW</em></div>
     <div class="t-nav">
@@ -351,160 +184,75 @@ html,body{width:100%;height:100%;background:var(--bg0);color:var(--txt1);
       <div class="t-tab" data-v="src" onclick="gv('src')">📡 KAYNAK</div>
       <div class="t-tab" data-v="set" onclick="gv('set')">⚙ AYARLAR</div>
     </div>
-    <div class="t-sep"></div>
     <div class="t-right">
-      <div class="t-sync-btn" id="syncBtn" onclick="syncAll()">⟳ SENKRONIZE</div>
+      <div class="t-btn" onclick="syncAll()">⟳ SYNC</div>
       <div class="t-clock" id="clk">--:--</div>
-      <div class="t-icon" onclick="openSrch()">🔍</div>
+      <div class="t-btn" onclick="openSrch()">🔍</div>
     </div>
   </div>
 
-  <!-- LIVE TV -->
   <div class="view on" id="liveView">
     <div id="sidebar">
       <div class="sb-top">
-        <div class="sb-search">
-          <span>🔍</span>
-          <input id="chQ" placeholder="Kanal ara..." oninput="fltCh(this.value)">
-        </div>
-        <div class="sb-groups" id="grpList"></div>
+        <div class="sb-search"><span>🔍</span><input id="chQ" placeholder="Kanal ara..." oninput="fltCh(this.value)"></div>
       </div>
+      <div id="grpList"></div>
       <div id="chList"></div>
     </div>
     <div id="playerArea">
       <div id="vWrap">
         <video id="vid" autoplay></video>
         <div id="noSig"><div class="ns-ic">📡</div><div class="ns-tx">KANAL SEÇİNİZ</div></div>
-        <div id="osd">
-          <div class="osd-name" id="osdN">—</div>
-          <div class="osd-sub" id="osdS">—</div>
-          <div class="osd-acts">
-            <div class="osd-act" onclick="tMute()">🔇 SES</div>
-            <div class="osd-act" onclick="tFS()">⛶ TAM EKRAN</div>
-          </div>
-        </div>
-      </div>
-      <div id="epgBar">
-        <div class="epg-lbl">PROGRAM</div>
-        <div class="epg-card now"><div class="epg-card-t">Bilgi bekleniyor...</div><div class="epg-card-s">—</div></div>
+        <div id="osd"><div class="osd-name" id="osdN">—</div><div class="osd-sub" id="osdS">—</div></div>
       </div>
     </div>
   </div>
 
-  <!-- VOD -->
   <div class="view" id="vodView">
-    <div id="vodSyncBar">
-      <div class="vsb-icon">⟳</div>
-      <div class="vsb-text" id="vsbTx">VOD verisi çekiliyor...</div>
-      <div class="vsb-prog"><div class="vsb-fill" id="vsbFill" style="width:0%"></div></div>
-      <div class="vsb-count" id="vsbCnt">0 / 0</div>
-    </div>
+    <div id="vodSyncBar"><div class="vsb-text" id="vsbTx">VOD yükleniyor...</div><div class="vsb-prog"><div class="vsb-fill" id="vsbFill" style="width:0%"></div></div><div class="vsb-count" id="vsbCnt">0/0</div></div>
     <div id="vodTop"></div>
-    <div id="vodBody">
-      <div class="empty"><div class="empty-ic">🎬</div><div class="empty-tx">VOD YÜKLENİYOR...</div></div>
-    </div>
+    <div id="vodBody"><div class="empty"><div class="empty-ic">🎬</div><div class="empty-tx">KAYNAK EKLEYİN</div></div></div>
   </div>
 
-  <!-- SOURCE -->
   <div class="view" id="srcView">
     <div class="src-wrap">
-
-      <!-- Xtream Codes -->
       <div class="src-panel xtream">
-        <h3>⚡ XTREAM CODES API</h3>
-        <p>Sağlayıcınızın Xtream API bilgilerini girin — VOD poster, özet ve IMDB bilgileri otomatik çekilir</p>
+        <h3>⚡ XTREAM CODES</h3>
+        <p>Host, kullanıcı adı ve şifre ile bağlanın</p>
+        <div class="src-row"><div class="src-field"><div class="src-lbl">SUNUCU URL</div><input class="src-in" id="xtHost" placeholder="http://host:port"></div></div>
         <div class="src-row">
-          <div class="src-field">
-            <div class="src-lbl">SUNUCU URL</div>
-            <input class="src-in" id="xtHost" placeholder="http://host:port">
-          </div>
+          <div class="src-field"><div class="src-lbl">KULLANICI ADI</div><input class="src-in" id="xtUser" placeholder="username"></div>
+          <div class="src-field"><div class="src-lbl">ŞİFRE</div><input class="src-in" id="xtPass" placeholder="password" type="password"></div>
         </div>
-        <div class="src-row">
-          <div class="src-field">
-            <div class="src-lbl">KULLANICI ADI</div>
-            <input class="src-in" id="xtUser" placeholder="username">
-          </div>
-          <div class="src-field">
-            <div class="src-lbl">ŞİFRE</div>
-            <input class="src-in" id="xtPass" placeholder="password" type="password">
-          </div>
-        </div>
-        <button class="src-btn xtream" onclick="loadXtream()">⚡ BAĞLAN VE SENKRONIZE ET</button>
-        <div id="xtRecentSect" class="recent-sect" style="display:none">
-          <div class="recent-lbl">KAYITLI HESAPLAR</div>
-          <div id="xtRecent"></div>
-        </div>
+        <button class="src-btn xtream" onclick="loadXtream()">⚡ BAĞLAN</button>
       </div>
-
-      <!-- M3U -->
       <div class="src-panel m3u">
         <h3>📋 M3U / M3U8</h3>
-        <p>Doğrudan M3U linki girin veya dosya yükleyin</p>
-        <div class="src-field" style="margin-bottom:10px">
-          <div class="src-lbl">M3U URL</div>
-          <input class="src-in" id="m3uUrl" placeholder="http://example.com/playlist.m3u8">
-        </div>
+        <p>M3U URL girin veya dosya yükleyin</p>
+        <div class="src-field" style="margin-bottom:10px"><div class="src-lbl">M3U URL</div><input class="src-in" id="m3uUrl" placeholder="http://example.com/playlist.m3u"></div>
         <button class="src-btn m3u" onclick="loadM3U()">📋 YÜKLE</button>
         <div class="src-divider">VEYA</div>
-        <label class="file-btn" for="fileIn">📁 M3U Dosyası Seç</label>
+        <label class="file-btn" for="fileIn">📁 Dosya Seç (.m3u / .m3u8)</label>
         <input type="file" id="fileIn" accept=".m3u,.m3u8,.txt" onchange="loadFile(this)">
-        <div id="m3uRecentSect" class="recent-sect" style="display:none">
-          <div class="recent-lbl">SON KULLANILAN</div>
-          <div id="m3uRecent"></div>
-        </div>
       </div>
-
     </div>
   </div>
 
-  <!-- SETTINGS -->
   <div class="view" id="setView">
     <div class="set-wrap">
       <div class="set-sec">OYNATICI</div>
-      <div class="set-row" onclick="tSet('autoplay')">
-        <div class="set-left"><div class="set-name">Otomatik Oynat</div><div class="set-desc">Kanal seçildiğinde anında başlat</div></div>
-        <div class="tog on" id="t-autoplay"></div>
-      </div>
-      <div class="set-row" onclick="tSet('hls')">
-        <div class="set-left"><div class="set-name">HLS.js Kullan</div><div class="set-desc">HLS/m3u8 stream desteği</div></div>
-        <div class="tog on" id="t-hls"></div>
-      </div>
-      <div class="set-row" onclick="tSet('remember')">
-        <div class="set-left"><div class="set-name">Son Kanalı Hatırla</div><div class="set-desc">Açılışta kaldığı yerden devam et</div></div>
-        <div class="tog on" id="t-remember"></div>
-      </div>
-      <div class="set-sec">VOD</div>
-      <div class="set-row" onclick="tSet('vodMeta')">
-        <div class="set-left"><div class="set-name">Xtream Metadata Çek</div><div class="set-desc">Poster, özet, IMDB — yavaş bağlantılarda kapatın</div></div>
-        <div class="tog on" id="t-vodMeta"></div>
-      </div>
-      <div class="set-row" onclick="tSet('vodBatch')">
-        <div class="set-left"><div class="set-name">Toplu Senkronizasyon</div><div class="set-desc">Tüm VOD'ları arka planda otomatik güncelle</div></div>
-        <div class="tog on" id="t-vodBatch"></div>
-      </div>
+      <div class="set-row" onclick="tSet('autoplay')"><div class="set-left"><div class="set-name">Otomatik Oynat</div><div class="set-desc">Kanal seçilince başlat</div></div><div class="tog on" id="t-autoplay"></div></div>
+      <div class="set-row" onclick="tSet('hls')"><div class="set-left"><div class="set-name">HLS.js Kullan</div><div class="set-desc">HLS stream desteği</div></div><div class="tog on" id="t-hls"></div></div>
+      <div class="set-row" onclick="tSet('remember')"><div class="set-left"><div class="set-name">Son Kanalı Hatırla</div><div class="set-desc">Açılışta devam et</div></div><div class="tog on" id="t-remember"></div></div>
       <div class="set-sec">BİLGİ</div>
-      <div class="set-row">
-        <div class="set-left"><div class="set-name">Toplam Kanal</div><div class="set-desc">Yüklü canlı kanal sayısı</div></div>
-        <div class="set-val" id="sCh">0</div>
-      </div>
-      <div class="set-row">
-        <div class="set-left"><div class="set-name">Toplam VOD</div><div class="set-desc">Yüklü içerik sayısı</div></div>
-        <div class="set-val" id="sVod">0</div>
-      </div>
-      <div class="set-row">
-        <div class="set-left"><div class="set-name">Sürüm</div><div class="set-desc">StreamFlow TV</div></div>
-        <div class="set-val">v2.0.0</div>
-      </div>
-      <div class="set-row" onclick="clearAll()" style="margin-top:8px">
-        <div class="set-left"><div class="set-name" style="color:var(--ac3)">Tüm Verileri Temizle</div><div class="set-desc">Kanal, VOD ve ayarları sıfırla</div></div>
-        <div style="font-size:18px">🗑</div>
-      </div>
+      <div class="set-row"><div class="set-left"><div class="set-name">Toplam Kanal</div></div><div class="set-val" id="sCh">0</div></div>
+      <div class="set-row"><div class="set-left"><div class="set-name">Toplam VOD</div></div><div class="set-val" id="sVod">0</div></div>
+      <div class="set-row"><div class="set-left"><div class="set-name">StreamFlow TV</div><div class="set-desc">Samsung Tizen IPTV Player</div></div><div class="set-val">v2.1</div></div>
+      <div class="set-row" onclick="clearAll()" style="margin-top:6px"><div class="set-left"><div class="set-name" style="color:#e8726d">Verileri Temizle</div></div><div style="font-size:16px">🗑</div></div>
     </div>
   </div>
+</div>
 
-</div><!-- /shell -->
-
-<!-- DETAIL MODAL -->
 <div id="detailModal">
   <div class="detail-box">
     <div class="detail-top">
@@ -515,7 +263,6 @@ html,body{width:100%;height:100%;background:var(--bg0);color:var(--txt1);
         <div class="detail-title" id="dtTitle">—</div>
         <div class="detail-cast" id="dtCast"></div>
         <div class="detail-plot" id="dtPlot"></div>
-        <div class="detail-stream-info" id="dtStream"></div>
         <div class="detail-acts">
           <button class="da-play" id="dtPlayBtn">▶ OYNAT</button>
           <button class="da-close" onclick="closeDetail()">✕ KAPAT</button>
@@ -525,354 +272,157 @@ html,body{width:100%;height:100%;background:var(--bg0);color:var(--txt1);
   </div>
 </div>
 
-<!-- SEARCH MODAL -->
 <div id="srchModal">
   <div class="srch-box">
-    <div class="srch-in-row">
-      <span style="font-size:20px;color:var(--txt3)">🔍</span>
-      <input class="srch-in" id="srchIn" placeholder="Kanal veya içerik ara..."
-        oninput="doSrch(this.value)" onkeydown="if(event.key==='Escape')closeSrch()">
-    </div>
+    <div class="srch-in-row"><span style="font-size:18px;color:var(--txt3)">🔍</span><input class="srch-in" id="srchIn" placeholder="Ara..." oninput="doSrch(this.value)" onkeydown="if(event.key==='Escape')closeSrch()"></div>
     <div id="srchRes"></div>
   </div>
 </div>
 
-<!-- NOTIF -->
-<div id="notif"><div class="notif-ic" id="nIc"></div><div class="notif-tx" id="nTx"></div></div>
+<div id="notif"><div class="n-ic" id="nIc"></div><div class="n-tx" id="nTx"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.7/hls.min.js"></script>
 <script>
-// ═══════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════
-const S = {
-  ch:[], vod:[], groups:[],
-  curGrp:'Tümü', curCh:null, filtCh:[],
-  vodCats:[], curVodCat:'Tümü', filtVod:[],
-  hls:null, hlsObj:null,
-  xtream:null,         // {host, user, pass}
-  vodMeta:{},          // vod_id -> enriched meta
-  settings:{autoplay:true,hls:true,remember:true,vodMeta:true,vodBatch:true},
-  recent:{xtream:[], m3u:[]},
-  syncing:false,
-  detailItem:null
-};
+const S={ch:[],vod:[],groups:[],curGrp:'Tümü',curCh:null,filtCh:[],vodCats:[],curVodCat:'Tümü',filtVod:[],hlsObj:null,xtream:null,vodMeta:{},settings:{autoplay:true,hls:true,remember:true},syncing:false};
 
-// ═══════════════════════════════════════════
-//  BOOT
-// ═══════════════════════════════════════════
-(function boot(){
-  // Load persisted data
-  try { const d=JSON.parse(localStorage.getItem('sf2_data')||'{}');
-    S.ch=d.ch||[]; S.vod=d.vod||[]; S.vodMeta=d.vodMeta||{};
-    S.xtream=d.xtream||null; } catch(e){}
-  try { S.settings={...S.settings,...JSON.parse(localStorage.getItem('sf2_set')||'{}')}; } catch(e){}
-  try { S.recent=JSON.parse(localStorage.getItem('sf2_recent')||'{"xtream":[],"m3u":[]}'); } catch(e){}
-
+// INIT
+(function init(){
+  try{const d=JSON.parse(localStorage.getItem('sf3_data')||'{}');S.ch=d.ch||[];S.vod=d.vod||[];S.vodMeta=d.vodMeta||{};S.xtream=d.xtream||null;}catch(e){}
+  try{S.settings={...S.settings,...JSON.parse(localStorage.getItem('sf3_set')||'{}');};}catch(e){}
   applySettings();
-  updateClock(); setInterval(updateClock,1000);
-
-  // Animate boot
-  const fill=document.getElementById('bFill');
-  const msg=document.getElementById('bMsg');
-  const msgs=['MODÜLLER YÜKLENİYOR...','VERİ YÜKLENIYOR...','HAZIRLANIYOR...','HOŞGELDİNİZ'];
-  let pct=0, mi=0;
-  const iv=setInterval(()=>{
-    pct+=Math.random()*28+10; if(pct>100)pct=100;
-    fill.style.width=pct+'%';
-    msg.textContent=msgs[Math.min(mi++,msgs.length-1)];
-    if(pct>=100){
-      clearInterval(iv);
-      setTimeout(()=>{
-        const b=document.getElementById('boot');
-        b.style.opacity='0'; b.style.transition='opacity .5s';
-        setTimeout(()=>{
-          b.style.display='none';
-          document.getElementById('shell').style.display='flex';
-          if(S.ch.length>0||S.vod.length>0) buildAll();
-          renderRecent();
-          setupRemote();
-          if(S.settings.remember){
-            const lc=localStorage.getItem('sf2_lastch');
-            if(lc){const c=S.ch.find(x=>x.name===lc); if(c) setTimeout(()=>playCh(c),600);}
-          }
-        },500);
-      },300);
-    }
-  },100);
+  updateClock();setInterval(updateClock,1000);
+  if(S.ch.length>0||S.vod.length>0)buildAll();
+  setupRemote();
+  if(S.settings.remember){const lc=localStorage.getItem('sf3_lastch');if(lc){const c=S.ch.find(x=>x.name===lc);if(c)setTimeout(()=>playCh(c),300);}}
 })();
 
-function buildAll(){ buildGroups(); renderCh(); buildVodUI(); updStats(); }
+function buildAll(){buildGroups();renderCh();buildVodUI();updStats();}
 
-// ═══════════════════════════════════════════
-//  XTREAM CODES API
-// ═══════════════════════════════════════════
+// XTREAM
 async function loadXtream(){
   const host=document.getElementById('xtHost').value.trim().replace(/\/$/,'');
   const user=document.getElementById('xtUser').value.trim();
   const pass=document.getElementById('xtPass').value.trim();
   if(!host||!user||!pass){notif('⚠','Tüm alanları doldurun');return;}
-
   S.xtream={host,user,pass};
-  notif('⟳','Xtream API bağlanıyor...');
-  showSyncBtn(true);
-
-  try {
-    // 1. Auth check
-    const auth=await xApi('get.php',{username:user,password:pass,type:'m3u_plus'});
-    // If auth fails it redirects or errors — we check by fetching player_api
-    const info=await xApiJson('player_api.php',{username:user,password:pass});
-    if(!info||info.user_info===undefined) throw new Error('Auth failed');
-
-    // 2. Live channels
-    const liveCats=await xApiJson('player_api.php',{username:user,password:pass,action:'get_live_categories'});
-    const liveStreams=await xApiJson('player_api.php',{username:user,password:pass,action:'get_live_streams'});
-
-    S.ch=liveStreams.map(s=>({
-      name:s.name,
-      group:liveCats.find(c=>c.category_id===s.category_id)?.category_name||'Genel',
-      logo:s.stream_icon||'',
-      url:`${host}/live/${user}/${pass}/${s.stream_id}.m3u8`,
-      stream_id:s.stream_id,
-      type:'live'
-    }));
-
-    // 3. VOD categories
-    const vodCats=await xApiJson('player_api.php',{username:user,password:pass,action:'get_vod_categories'});
-    // 4. VOD streams
-    const vodStreams=await xApiJson('player_api.php',{username:user,password:pass,action:'get_vod_streams'});
-
-    S.vod=vodStreams.map(v=>({
-      name:v.name,
-      group:vodCats.find(c=>c.category_id===v.category_id)?.category_name||'VOD',
-      logo:v.stream_icon||v.cover||'',
-      url:`${host}/movie/${user}/${pass}/${v.stream_id}.${v.container_extension||'mp4'}`,
-      vod_id:v.stream_id,
-      added:v.added,
-      rating:v.rating||v.rating_5based||'',
-      year:'',plot:'',cast:'',director:'',genre:'',
-      type:'vod', _meta:false
-    }));
-
-    // Save recent
-    const acc={host,user,pass,label:`${user}@${host.replace(/https?:\/\//,'')}`};
-    S.recent.xtream=S.recent.xtream.filter(r=>r.host!==host||r.user!==user);
-    S.recent.xtream.unshift(acc); S.recent.xtream=S.recent.xtream.slice(0,4);
-    saveAll();
-    buildAll();
-    notif('✅',`${S.ch.length} kanal + ${S.vod.length} VOD yüklendi`);
-    showSyncBtn(false);
-
-    // 5. Async VOD metadata
-    if(S.settings.vodMeta) batchFetchVodMeta(vodStreams,vodCats,host,user,pass);
-  } catch(e){
-    notif('❌','Bağlantı hatası: '+e.message);
-    showSyncBtn(false);
-  }
+  notif('⟳','Bağlanıyor...');
+  try{
+    const liveCats=await xJ('player_api.php',{username:user,password:pass,action:'get_live_categories'});
+    const liveStreams=await xJ('player_api.php',{username:user,password:pass,action:'get_live_streams'});
+    S.ch=liveStreams.map(s=>({name:s.name,group:liveCats.find(c=>c.category_id===s.category_id)?.category_name||'Genel',logo:s.stream_icon||'',url:`${host}/live/${user}/${pass}/${s.stream_id}.m3u8`,stream_id:s.stream_id,type:'live'}));
+    const vodCats=await xJ('player_api.php',{username:user,password:pass,action:'get_vod_categories'});
+    const vodStreams=await xJ('player_api.php',{username:user,password:pass,action:'get_vod_streams'});
+    S.vod=vodStreams.map(v=>({name:v.name,group:vodCats.find(c=>c.category_id===v.category_id)?.category_name||'VOD',logo:v.stream_icon||v.cover||'',url:`${host}/movie/${user}/${pass}/${v.stream_id}.${v.container_extension||'mp4'}`,vod_id:v.stream_id,added:v.added,rating:v.rating||'',type:'vod',_meta:false}));
+    saveAll();buildAll();
+    notif('✅',`${S.ch.length} kanal + ${S.vod.length} VOD`);
+    batchVodMeta(vodStreams,host,user,pass);
+    setTimeout(()=>gv('live'),800);
+  }catch(e){notif('❌','Hata: '+e.message);}
 }
 
-async function xApiJson(endpoint,params){
-  const url=S.xtream.host+'/'+endpoint+'?'+new URLSearchParams(params);
-  const r=await fetchWithFallback(url);
-  return JSON.parse(r);
-}
-async function xApi(endpoint,params){
-  const url=S.xtream.host+'/'+endpoint+'?'+new URLSearchParams(params);
-  return fetchWithFallback(url);
+async function xJ(ep,params){
+  const url=S.xtream.host+'/'+ep+'?'+new URLSearchParams(params);
+  const r=await fetchF(url);return JSON.parse(r);
 }
 
-// Batch VOD metadata fetch (async, progressive)
-async function batchFetchVodMeta(vodStreams,vodCats,host,user,pass){
-  if(!S.settings.vodBatch) return;
+async function batchVodMeta(streams,host,user,pass){
   const bar=document.getElementById('vodSyncBar');
   const fill=document.getElementById('vsbFill');
   const cnt=document.getElementById('vsbCnt');
-  const tx=document.getElementById('vsbTx');
   bar.classList.add('show');
-
-  const total=Math.min(vodStreams.length,300); // cap at 300 for perf
+  const total=Math.min(streams.length,200);
   let done=0;
-
-  // Process in batches of 10 parallel
   for(let i=0;i<total;i+=10){
-    const batch=vodStreams.slice(i,i+10);
+    const batch=streams.slice(i,i+10);
     await Promise.all(batch.map(async v=>{
-      if(S.vodMeta[v.stream_id]) return; // already have it
+      if(S.vodMeta[v.stream_id])return;
       try{
-        const info=await xApiJson('player_api.php',{
-          username:user,password:pass,action:'get_vod_info',vod_id:v.stream_id
-        });
+        const info=await xJ('player_api.php',{username:user,password:pass,action:'get_vod_info',vod_id:v.stream_id});
         const mi=info.movie_data||info.info||{};
-        S.vodMeta[v.stream_id]={
-          plot:mi.plot||mi.description||'',
-          cast:mi.cast||'',
-          director:mi.director||'',
-          genre:mi.genre||'',
-          year:mi.releasedate||mi.year||'',
-          rating:mi.rating||mi.tmdb_rating||v.rating||'',
-          poster:mi.movie_image||mi.cover_big||v.stream_icon||'',
-          backdrop:mi.backdrop_path?.[0]||''
-        };
-        // Update vod item
-        const vodItem=S.vod.find(x=>x.vod_id===v.stream_id);
-        if(vodItem){
-          Object.assign(vodItem,{...S.vodMeta[v.stream_id],_meta:true});
-          if(vodItem.poster) vodItem.logo=vodItem.poster;
-        }
+        S.vodMeta[v.stream_id]={plot:mi.plot||'',cast:mi.cast||'',director:mi.director||'',genre:mi.genre||'',year:mi.releasedate||mi.year||'',rating:mi.rating||v.rating||'',poster:mi.movie_image||mi.cover_big||v.stream_icon||''};
+        const vi=S.vod.find(x=>x.vod_id===v.stream_id);
+        if(vi){Object.assign(vi,{...S.vodMeta[v.stream_id],_meta:true});if(vi.poster)vi.logo=vi.poster;}
       }catch(e){}
       done++;
     }));
-
-    const pct=Math.round((done/total)*100);
-    fill.style.width=pct+'%';
-    cnt.textContent=`${done} / ${total}`;
-    tx.textContent=`VOD metadata çekiliyor... %${pct}`;
-
-    // Re-render grid incrementally every 50 items
-    if(i%50===0) renderVodGrid();
-    // Save periodically
-    if(i%100===0) saveAll();
+    fill.style.width=Math.round((done/total)*100)+'%';
+    cnt.textContent=done+'/'+total;
+    if(i%50===0)renderVodGrid();
+    if(i%100===0)saveAll();
   }
-
   bar.classList.remove('show');
-  saveAll();
-  renderVodGrid();
+  saveAll();renderVodGrid();
   notif('✅','VOD metadata güncellendi');
 }
 
-// Sync button (top bar re-sync)
 async function syncAll(){
-  if(S.syncing) return;
-  S.syncing=true;
-  showSyncBtn(true);
-  if(S.xtream){
-    document.getElementById('xtHost').value=S.xtream.host;
-    document.getElementById('xtUser').value=S.xtream.user;
-    document.getElementById('xtPass').value=S.xtream.pass;
-    await loadXtream();
-  } else {
-    notif('⚠','Önce bir kaynak ekleyin');
-  }
+  if(S.syncing)return;S.syncing=true;
+  if(S.xtream){document.getElementById('xtHost').value=S.xtream.host;document.getElementById('xtUser').value=S.xtream.user;document.getElementById('xtPass').value=S.xtream.pass;await loadXtream();}
+  else notif('⚠','Önce kaynak ekleyin');
   S.syncing=false;
-  showSyncBtn(false);
 }
 
-function showSyncBtn(on){
-  const b=document.getElementById('syncBtn');
-  on ? b.classList.add('spinning') : b.classList.remove('spinning');
-}
-
-// ═══════════════════════════════════════════
-//  M3U PARSER
-// ═══════════════════════════════════════════
+// M3U
 async function loadM3U(){
   const url=document.getElementById('m3uUrl').value.trim();
   if(!url){notif('⚠','URL girin');return;}
-  notif('⟳','M3U yükleniyor...');
-  try{
-    const txt=await fetchWithFallback(url);
-    processM3U(txt,url);
-  }catch(e){notif('❌','Yüklenemedi: '+e.message);}
+  notif('⟳','Yükleniyor...');
+  try{const txt=await fetchF(url);processM3U(txt,url);}
+  catch(e){notif('❌','Yüklenemedi');}
 }
-
-function loadFile(input){
-  const f=input.files[0]; if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>processM3U(e.target.result,f.name);
-  r.readAsText(f,'UTF-8');
-}
-
+function loadFile(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>processM3U(e.target.result,f.name);r.readAsText(f,'UTF-8');}
 function processM3U(txt,src){
   if(!txt.includes('#EXTM3U')&&!txt.includes('#EXTINF')){notif('❌','Geçersiz M3U');return;}
   const lines=txt.split('\n').map(l=>l.trim()).filter(l=>l);
-  const chs=[], vods=[];
-  let cur=null;
+  const chs=[],vods=[];let cur=null;
   for(const l of lines){
     if(l.startsWith('#EXTINF:')){
       cur={name:'',group:'Genel',logo:'',url:'',type:'live',_meta:false};
-      const nm=l.match(/,(.+)$/); if(nm) cur.name=nm[1].trim();
-      const gr=l.match(/group-title="([^"]*)"/i); if(gr) cur.group=gr[1]||'Genel';
-      const lo=l.match(/tvg-logo="([^"]*)"/i); if(lo) cur.logo=lo[1];
-      // VOD detection
-      const glo=cur.group.toLowerCase(), nlo=cur.name.toLowerCase();
-      if(glo.match(/movie|film|vod|series|dizi|cinema/)||nlo.match(/s\d{2}e\d{2}/i)) cur.type='vod';
-    } else if(!l.startsWith('#')&&cur&&(l.startsWith('http')||l.startsWith('rtmp')||l.startsWith('rtsp'))){
-      cur.url=l;
-      (cur.type==='vod'?vods:chs).push(cur); cur=null;
+      const nm=l.match(/,(.+)$/);if(nm)cur.name=nm[1].trim();
+      const gr=l.match(/group-title="([^"]*)"/i);if(gr)cur.group=gr[1]||'Genel';
+      const lo=l.match(/tvg-logo="([^"]*)"/i);if(lo)cur.logo=lo[1];
+      if(cur.group.toLowerCase().match(/movie|film|vod|series|dizi/))cur.type='vod';
+    }else if(!l.startsWith('#')&&cur&&(l.startsWith('http')||l.startsWith('rtmp'))){
+      cur.url=l;(cur.type==='vod'?vods:chs).push(cur);cur=null;
     }
   }
-  S.ch=chs; S.vod=vods;
-  S.xtream=null;
-  if(src.startsWith('http')){
-    S.recent.m3u=S.recent.m3u.filter(u=>u!==src);
-    S.recent.m3u.unshift(src); S.recent.m3u=S.recent.m3u.slice(0,5);
-  }
-  saveAll(); buildAll(); renderRecent();
-  notif('✅',`${chs.length} kanal, ${vods.length} VOD yüklendi`);
-  setTimeout(()=>gv('live'),800);
+  S.ch=chs;S.vod=vods;S.xtream=null;
+  saveAll();buildAll();notif('✅',`${chs.length} kanal, ${vods.length} VOD`);
+  setTimeout(()=>gv('live'),600);
 }
 
-// ═══════════════════════════════════════════
-//  PLAYER
-// ═══════════════════════════════════════════
+// PLAYER
 function playCh(ch){
-  if(!ch?.url) return;
-  S.curCh=ch;
-  renderCh();
+  if(!ch?.url)return;
+  S.curCh=ch;renderCh();
   document.getElementById('noSig').style.display='none';
   document.getElementById('osdN').textContent=ch.name;
-  document.getElementById('osdS').textContent=ch.group+' • '+ch.url.split('/').pop();
+  document.getElementById('osdS').textContent=ch.group;
   showOSD();
-  if(S.settings.remember) localStorage.setItem('sf2_lastch',ch.name);
-  startPlay(ch.url);
-  notif('▶',ch.name);
+  if(S.settings.remember)localStorage.setItem('sf3_lastch',ch.name);
+  startPlay(ch.url);notif('▶',ch.name);
 }
-
-function playVodItem(item){
-  gv('live');
-  setTimeout(()=>{
-    document.getElementById('noSig').style.display='none';
-    document.getElementById('osdN').textContent=item.name;
-    document.getElementById('osdS').textContent=(item.year?item.year+' • ':'')+item.group;
-    showOSD(); startPlay(item.url);
-    notif('▶',item.name);
-  },120);
-}
-
+function playVodItem(item){gv('live');setTimeout(()=>{document.getElementById('noSig').style.display='none';document.getElementById('osdN').textContent=item.name;document.getElementById('osdS').textContent=item.group;showOSD();startPlay(item.url);notif('▶',item.name);},100);}
 function startPlay(url){
   const vid=document.getElementById('vid');
   if(S.hlsObj){S.hlsObj.destroy();S.hlsObj=null;}
-  const isHls=url.match(/\.m3u8|\/hls\//i)||S.xtream;
-  if(isHls&&S.settings.hls&&Hls.isSupported()){
+  const isHls=url.match(/\.m3u8|\/live\//i);
+  if(isHls&&S.settings.hls&&typeof Hls!=='undefined'&&Hls.isSupported()){
     S.hlsObj=new Hls({maxBufferLength:30});
-    S.hlsObj.loadSource(url); S.hlsObj.attachMedia(vid);
+    S.hlsObj.loadSource(url);S.hlsObj.attachMedia(vid);
     S.hlsObj.on(Hls.Events.MANIFEST_PARSED,()=>{if(S.settings.autoplay)vid.play().catch(()=>{});});
-    S.hlsObj.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal)notif('❌','Stream yüklenemedi');});
-  } else {
-    vid.src=url;
-    if(S.settings.autoplay)vid.play().catch(()=>{});
-  }
+    S.hlsObj.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal)notif('❌','Stream hatası');});
+  }else{vid.src=url;if(S.settings.autoplay)vid.play().catch(()=>{});}
 }
-
 let osdTmr;
-function showOSD(){
-  const o=document.getElementById('osd');
-  o.classList.add('show');
-  clearTimeout(osdTmr);
-  osdTmr=setTimeout(()=>o.classList.remove('show'),4000);
-}
+function showOSD(){const o=document.getElementById('osd');o.classList.add('show');clearTimeout(osdTmr);osdTmr=setTimeout(()=>o.classList.remove('show'),4000);}
 function tMute(){const v=document.getElementById('vid');v.muted=!v.muted;notif(v.muted?'🔇':'🔊',v.muted?'Sessiz':'Ses Açık');}
 function tFS(){const e=document.getElementById('vWrap');document.fullscreenElement?document.exitFullscreen():e.requestFullscreen();}
 
-// ═══════════════════════════════════════════
-//  GROUPS / CHANNEL LIST
-// ═══════════════════════════════════════════
+// GROUPS
 function buildGroups(){
-  const gs=['Tümü',...new Set(S.ch.map(c=>c.group))];
-  S.groups=gs;
-  document.getElementById('grpList').innerHTML=gs.map(g=>
-    `<div class="grp-chip ${g===S.curGrp?'on':''}" onclick="selGrp('${g.replace(/'/g,"\\'")}')">
-      ${g==='Tümü'?'⭐ ':''}${g}</div>`).join('');
+  const gs=['Tümü',...new Set(S.ch.map(c=>c.group))];S.groups=gs;
+  document.getElementById('grpList').innerHTML=gs.map(g=>`<div class="grp-chip ${g===S.curGrp?'on':''}" onclick="selGrp('${g.replace(/'/g,"\\'")}')">${g==='Tümü'?'⭐ ':''}${g}</div>`).join('');
 }
 function selGrp(g){S.curGrp=g;buildGroups();renderCh();}
 function renderCh(q=''){
@@ -880,220 +430,92 @@ function renderCh(q=''){
   if(q)chs=chs.filter(c=>c.name.toLowerCase().includes(q.toLowerCase()));
   S.filtCh=chs;
   document.getElementById('chList').innerHTML=chs.length
-    ? chs.map((c,i)=>`
-        <div class="ch-row ${S.curCh?.name===c.name?'on':''}" onclick="playCh(S.filtCh[${i}])">
-          <span class="ch-num">${i+1}</span>
-          <div class="ch-logo">${c.logo?`<img src="${c.logo}" onerror="this.style.display='none'">`:' 📺'}</div>
-          <span class="ch-name">${c.name}</span>
-          <span class="ch-live"></span>
-        </div>`).join('')
-    : '<div class="empty"><div class="empty-ic">📺</div><div class="empty-tx">KANAL YOK</div></div>';
+    ?chs.map((c,i)=>`<div class="ch-row ${S.curCh?.name===c.name?'on':''}" onclick="playCh(S.filtCh[${i}])"><span class="ch-num">${i+1}</span><div class="ch-logo">${c.logo?`<img src="${c.logo}" onerror="this.style.display='none'">`:' 📺'}</div><span class="ch-name">${c.name}</span></div>`).join('')
+    :'<div class="empty"><div class="empty-ic">📺</div><div class="empty-tx">KANAL YOK</div></div>';
 }
 function fltCh(v){renderCh(v);}
 
-// ═══════════════════════════════════════════
-//  VOD UI
-// ═══════════════════════════════════════════
+// VOD
 function buildVodUI(){
-  // Categories
-  const cats=['Tümü',...new Set(S.vod.map(v=>v.group))];
-  S.vodCats=cats;
-  document.getElementById('vodTop').innerHTML=cats.map(c=>
-    `<div class="vcat ${c===S.curVodCat?'on':''}" onclick="selVodCat('${c.replace(/'/g,"\\'")}')">
-      ${c==='Tümü'?'🎬 ':''}${c}</div>`).join('')+
-    `<div class="vod-search-wrap"><span>🔍</span>
-      <input placeholder="Film / dizi ara..." oninput="fltVod(this.value)"></div>`;
+  const cats=['Tümü',...new Set(S.vod.map(v=>v.group))];S.vodCats=cats;
+  document.getElementById('vodTop').innerHTML=cats.map(c=>`<div class="vcat ${c===S.curVodCat?'on':''}" onclick="selVodCat('${c.replace(/'/g,"\\'")}')">${c==='Tümü'?'🎬 ':''}${c}</div>`).join('');
   renderVodGrid();
 }
 function selVodCat(c){S.curVodCat=c;buildVodUI();}
-function fltVod(q){
-  let items=S.curVodCat==='Tümü'?S.vod:S.vod.filter(v=>v.group===S.curVodCat);
-  if(q)items=items.filter(v=>v.name.toLowerCase().includes(q.toLowerCase()));
-  S.filtVod=items;
-  renderVodGrid(items);
-}
 function renderVodGrid(items){
   items=items||(S.curVodCat==='Tümü'?S.vod:S.vod.filter(v=>v.group===S.curVodCat));
   S.filtVod=items;
   const body=document.getElementById('vodBody');
-  if(!items.length){body.innerHTML='<div class="empty"><div class="empty-ic">🎬</div><div class="empty-tx">İÇERİK BULUNAMADI</div></div>';return;}
-  // Sort: newest first (by 'added' timestamp if available)
+  if(!items.length){body.innerHTML='<div class="empty"><div class="empty-ic">🎬</div><div class="empty-tx">İÇERİK YOK</div></div>';return;}
   const sorted=[...items].sort((a,b)=>(parseInt(b.added)||0)-(parseInt(a.added)||0));
-  body.innerHTML=`<div id="vodGrid">${sorted.map((v,i)=>vodCard(v,i)).join('')}</div>`;
-}
-function vodCard(v,i){
-  const rating=v.rating?parseFloat(v.rating).toFixed(1):'';
-  const isNew=v.added&&(Date.now()/1000-parseInt(v.added))<86400*30;
-  return `<div class="v-card" onclick="openDetail(S.filtVod[${i}])">
-    <div class="v-poster">
-      ${v.logo?`<img src="${v.logo}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="v-poster-fallback" style="display:none">🎬</div>`
-        :`<div class="v-poster-fallback">🎬</div>`}
-      <div class="v-overlay"></div>
-      <div class="v-play-btn">▶</div>
-      ${rating?`<div class="v-rating">⭐ ${rating}</div>`:''}
-      <div class="v-badges">
-        ${isNew?'<span class="v-badge new">YENİ</span>':''}
-        <span class="v-badge hd">HD</span>
-      </div>
-    </div>
-    <div class="v-body">
-      <div class="v-title">${v.name}</div>
-      <div class="v-meta">${v.group}${v.year?' • '+v.year:''}</div>
-      ${v.plot?`<div class="v-desc">${v.plot}</div>`:''}
-    </div>
-  </div>`;
+  body.innerHTML=`<div id="vodGrid">${sorted.map((v,i)=>`<div class="v-card" onclick="openDetail(S.filtVod[${i}])"><div class="v-poster">${v.logo?`<img src="${v.logo}" onerror="this.style.display='none'">`:''}<div class="v-poster-fb">🎬</div><div class="v-play">▶</div>${v.rating?`<div class="v-rating">⭐ ${parseFloat(v.rating).toFixed(1)}</div>`:''}</div><div class="v-body"><div class="v-title">${v.name}</div><div class="v-meta">${v.group}${v.year?' • '+v.year:''}</div></div></div>`).join('')}</div>`;
 }
 
-// ═══════════════════════════════════════════
-//  DETAIL MODAL
-// ═══════════════════════════════════════════
+// DETAIL
 function openDetail(item){
-  S.detailItem=item;
   const m=S.vodMeta[item.vod_id]||{};
   const poster=m.poster||item.logo||'';
-  const ptEl=document.getElementById('dtPoster');
-  const fbEl=document.getElementById('dtPosterFb');
+  const ptEl=document.getElementById('dtPoster');const fbEl=document.getElementById('dtPosterFb');
   if(poster){ptEl.src=poster;ptEl.style.display='';fbEl.style.display='none';}
   else{ptEl.style.display='none';fbEl.style.display='flex';}
   document.getElementById('dtTitle').textContent=item.name;
-  const rating=(m.rating||item.rating)?`<div class="detail-badge db-rating">⭐ ${parseFloat(m.rating||item.rating).toFixed(1)}</div>`:'';
-  document.getElementById('dtBadges').innerHTML=
-    `<div class="detail-badge db-cat">${item.group}</div>`+
-    (m.year||item.year?`<div class="detail-badge db-year">${m.year||item.year}</div>`:'')+
-    rating+
-    (m.genre?`<div class="detail-badge db-year">${m.genre}</div>`:'');
-  document.getElementById('dtCast').innerHTML=
-    (m.director?`<b>Yönetmen:</b> ${m.director}<br>`:'')+(m.cast?`<b>Oyuncular:</b> ${m.cast}`:'');
+  const rat=(m.rating||item.rating)?`<div class="d-badge db-rat">⭐ ${parseFloat(m.rating||item.rating).toFixed(1)}</div>`:'';
+  document.getElementById('dtBadges').innerHTML=`<div class="d-badge db-cat">${item.group}</div>${(m.year||item.year)?`<div class="d-badge db-year">${m.year||item.year}</div>`:''}${rat}${m.genre?`<div class="d-badge db-year">${m.genre}</div>`:''}`;
+  document.getElementById('dtCast').innerHTML=(m.director?`<b>Yönetmen:</b> ${m.director}<br>`:'')+(m.cast?`<b>Oyuncular:</b> ${m.cast}`:'');
   document.getElementById('dtPlot').textContent=m.plot||item.plot||'Açıklama bulunamadı.';
-  document.getElementById('dtStream').textContent=item.url;
   document.getElementById('dtPlayBtn').onclick=()=>{closeDetail();playVodItem(item);};
   document.getElementById('detailModal').classList.add('open');
 }
 function closeDetail(){document.getElementById('detailModal').classList.remove('open');}
 document.getElementById('detailModal').addEventListener('click',function(e){if(e.target===this)closeDetail();});
 
-// ═══════════════════════════════════════════
-//  SEARCH
-// ═══════════════════════════════════════════
+// SEARCH
 function openSrch(){document.getElementById('srchModal').classList.add('open');setTimeout(()=>document.getElementById('srchIn').focus(),50);}
 function closeSrch(){document.getElementById('srchModal').classList.remove('open');document.getElementById('srchIn').value='';document.getElementById('srchRes').innerHTML='';}
 function doSrch(q){
   if(!q||q.length<2){document.getElementById('srchRes').innerHTML='';return;}
   const lq=q.toLowerCase();
-  const res=[
-    ...S.ch.filter(c=>c.name.toLowerCase().includes(lq)).slice(0,6).map(c=>({...c,_t:'live'})),
-    ...S.vod.filter(v=>v.name.toLowerCase().includes(lq)).slice(0,6).map(v=>({...v,_t:'vod'}))
-  ];
-  document.getElementById('srchRes').innerHTML=res.length
-    ? res.map((r,i)=>`<div class="sr-row" onclick="srchPlay(${i})">
-        <span class="sr-type ${r._t}">${r._t==='live'?'CANLI':'VOD'}</span>
-        <span class="sr-name">${r.name}</span>
-        <span class="sr-grp">${r.group}</span></div>`).join('')
-    : '<div class="empty" style="padding:24px"><div class="empty-tx">SONUÇ YOK</div></div>';
+  const res=[...S.ch.filter(c=>c.name.toLowerCase().includes(lq)).slice(0,5).map(c=>({...c,_t:'live'})),...S.vod.filter(v=>v.name.toLowerCase().includes(lq)).slice(0,5).map(v=>({...v,_t:'vod'}))];
+  document.getElementById('srchRes').innerHTML=res.length?res.map((r,i)=>`<div class="sr-row" onclick="srchPlay(${i})"><span class="sr-type ${r._t}">${r._t==='live'?'CANLI':'VOD'}</span><span class="sr-name">${r.name}</span><span class="sr-grp">${r.group}</span></div>`).join(''):'<div class="empty" style="padding:20px"><div class="empty-tx">SONUÇ YOK</div></div>';
   window._srchRes=res;
 }
 function srchPlay(i){const r=window._srchRes[i];closeSrch();if(r._t==='vod')openDetail(r);else{playCh(r);gv('live');}}
 document.getElementById('srchModal').addEventListener('click',function(e){if(e.target===this)closeSrch();});
 
-// ═══════════════════════════════════════════
-//  NAV
-// ═══════════════════════════════════════════
-function gv(name){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
-  document.querySelectorAll('.t-tab').forEach(t=>t.classList.remove('on'));
-  document.getElementById(name+'View').classList.add('on');
-  document.querySelector(`.t-tab[data-v="${name}"]`).classList.add('on');
-}
+// NAV
+function gv(name){document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));document.querySelectorAll('.t-tab').forEach(t=>t.classList.remove('on'));document.getElementById(name+'View').classList.add('on');document.querySelector(`.t-tab[data-v="${name}"]`).classList.add('on');}
 
-// ═══════════════════════════════════════════
-//  SETTINGS
-// ═══════════════════════════════════════════
-function applySettings(){
-  for(const[k,v]of Object.entries(S.settings)){
-    const t=document.getElementById('t-'+k);
-    if(t)v?t.classList.add('on'):t.classList.remove('on');
-  }
-}
-function tSet(k){
-  S.settings[k]=!S.settings[k];
-  const t=document.getElementById('t-'+k);
-  if(t)S.settings[k]?t.classList.add('on'):t.classList.remove('on');
-  localStorage.setItem('sf2_set',JSON.stringify(S.settings));
-}
-function updStats(){
-  document.getElementById('sCh').textContent=S.ch.length;
-  document.getElementById('sVod').textContent=S.vod.length;
-}
-function clearAll(){
-  if(!confirm('Tüm veriler silinsin mi?'))return;
-  localStorage.clear(); location.reload();
-}
+// SETTINGS
+function applySettings(){for(const[k,v]of Object.entries(S.settings)){const t=document.getElementById('t-'+k);if(t)v?t.classList.add('on'):t.classList.remove('on');}}
+function tSet(k){S.settings[k]=!S.settings[k];const t=document.getElementById('t-'+k);if(t)S.settings[k]?t.classList.add('on'):t.classList.remove('on');localStorage.setItem('sf3_set',JSON.stringify(S.settings));}
+function updStats(){document.getElementById('sCh').textContent=S.ch.length;document.getElementById('sVod').textContent=S.vod.length;}
+function clearAll(){if(!confirm('Sıfırlansın mı?'))return;localStorage.clear();location.reload();}
 
-// ═══════════════════════════════════════════
-//  RECENT
-// ═══════════════════════════════════════════
-function renderRecent(){
-  // Xtream
-  const xs=document.getElementById('xtRecentSect');
-  const xl=document.getElementById('xtRecent');
-  if(S.recent.xtream.length){
-    xs.style.display='block';
-    xl.innerHTML=S.recent.xtream.map(a=>
-      `<div class="recent-row" onclick="fillXtream('${a.host}','${a.user}','${a.pass}')">
-        <span class="recent-ic">⚡</span>
-        <span class="recent-url">${a.label}</span>
-        <span class="recent-tag">XTREAM</span></div>`).join('');
-  }
-  // M3U
-  const ms=document.getElementById('m3uRecentSect');
-  const ml=document.getElementById('m3uRecent');
-  if(S.recent.m3u.length){
-    ms.style.display='block';
-    ml.innerHTML=S.recent.m3u.map(u=>
-      `<div class="recent-row" onclick="document.getElementById('m3uUrl').value='${u}';loadM3U()">
-        <span class="recent-ic">📋</span>
-        <span class="recent-url">${u}</span></div>`).join('');
-  }
-}
-function fillXtream(h,u,p){
-  document.getElementById('xtHost').value=h;
-  document.getElementById('xtUser').value=u;
-  document.getElementById('xtPass').value=p;
-  gv('src');
-}
-
-// ═══════════════════════════════════════════
-//  REMOTE CONTROL
-// ═══════════════════════════════════════════
+// REMOTE
 function setupRemote(){
   document.addEventListener('keydown',e=>{
-    const K={UP:38,DOWN:40,LEFT:37,RIGHT:39,ENTER:13,BACK:10009,
-      PLAY:415,PAUSE:19,MUTE:449,INFO:457,
-      CH_UP:427,CH_DN:428,RED:403,GREEN:404,YELLOW:405,BLUE:406,SEARCH:59};
     switch(e.keyCode){
-      case K.UP:navCh(-1);e.preventDefault();break;
-      case K.DOWN:navCh(1);e.preventDefault();break;
-      case K.CH_UP:navCh(-1);break;
-      case K.CH_DN:navCh(1);break;
-      case K.ENTER:showOSD();break;
-      case K.BACK:handleBack(e);break;
-      case K.PLAY:document.getElementById('vid').play();break;
-      case K.PAUSE:document.getElementById('vid').pause();break;
-      case K.MUTE:tMute();break;
-      case K.INFO:showOSD();break;
-      case K.RED:gv('vod');break;
-      case K.BLUE:gv('live');break;
-      case K.GREEN:openSrch();break;
-      case K.YELLOW:gv('src');break;
-      case K.SEARCH:openSrch();break;
+      case 38:navCh(-1);e.preventDefault();break;
+      case 40:navCh(1);e.preventDefault();break;
+      case 427:navCh(-1);break;
+      case 428:navCh(1);break;
+      case 13:showOSD();break;
+      case 10009:handleBack(e);break;
+      case 415:document.getElementById('vid').play();break;
+      case 19:document.getElementById('vid').pause();break;
+      case 449:tMute();break;
+      case 457:showOSD();break;
+      case 403:gv('vod');break;
+      case 406:gv('live');break;
+      case 404:openSrch();break;
+      case 405:gv('src');break;
     }
   });
 }
 function navCh(d){
   if(!S.filtCh.length)return;
   const idx=S.curCh?S.filtCh.findIndex(c=>c.name===S.curCh.name):-1;
-  let nx=idx+d; if(nx<0)nx=S.filtCh.length-1; if(nx>=S.filtCh.length)nx=0;
+  let nx=idx+d;if(nx<0)nx=S.filtCh.length-1;if(nx>=S.filtCh.length)nx=0;
   playCh(S.filtCh[nx]);
   const items=document.querySelectorAll('.ch-row');
   if(items[nx])items[nx].scrollIntoView({block:'nearest',behavior:'smooth'});
@@ -1104,43 +526,15 @@ function handleBack(e){
   if(window.tizen)try{tizen.application.getCurrentApplication().exit();}catch(x){}
 }
 
-// ═══════════════════════════════════════════
-//  UTIL
-// ═══════════════════════════════════════════
-function updateClock(){
-  const n=new Date();
-  document.getElementById('clk').textContent=
-    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
-}
-
+// UTIL
+function updateClock(){const n=new Date();document.getElementById('clk').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');}
 let nTmr;
-function notif(ic,tx){
-  document.getElementById('nIc').textContent=ic;
-  document.getElementById('nTx').textContent=tx;
-  const el=document.getElementById('notif');
-  el.classList.add('show'); clearTimeout(nTmr);
-  nTmr=setTimeout(()=>el.classList.remove('show'),3000);
+function notif(ic,tx){document.getElementById('nIc').textContent=ic;document.getElementById('nTx').textContent=tx;const el=document.getElementById('notif');el.classList.add('show');clearTimeout(nTmr);nTmr=setTimeout(()=>el.classList.remove('show'),3000);}
+async function fetchF(url){
+  try{const r=await fetch(url,{mode:'cors'});if(!r.ok)throw new Error(r.status);return r.text();}
+  catch(e){const p='https://api.allorigins.win/raw?url='+encodeURIComponent(url);const r=await fetch(p);if(!r.ok)throw new Error('proxy err');return r.text();}
 }
-
-async function fetchWithFallback(url){
-  try{
-    const r=await fetch(url,{mode:'cors'});
-    if(!r.ok)throw new Error(r.status);
-    return r.text();
-  }catch(e){
-    // CORS proxy fallback
-    const proxy='https://api.allorigins.win/raw?url='+encodeURIComponent(url);
-    const r=await fetch(proxy);
-    if(!r.ok)throw new Error('Proxy error '+r.status);
-    return r.text();
-  }
-}
-
-function saveAll(){
-  try{localStorage.setItem('sf2_data',JSON.stringify({ch:S.ch,vod:S.vod,vodMeta:S.vodMeta,xtream:S.xtream}));}catch(e){}
-  try{localStorage.setItem('sf2_recent',JSON.stringify(S.recent));}catch(e){}
-  updStats();
-}
+function saveAll(){try{localStorage.setItem('sf3_data',JSON.stringify({ch:S.ch,vod:S.vod,vodMeta:S.vodMeta,xtream:S.xtream}));}catch(e){}updStats();}
 </script>
 </body>
 </html>
