@@ -578,7 +578,7 @@ const S = {
   const msgs=['MODÜLLER YÜKLENİYOR...','VERİ YÜKLENIYOR...','HAZIRLANIYOR...','HOŞGELDİNİZ'];
   let pct=0, mi=0;
   const iv=setInterval(()=>{
-    pct+=Math.random()*28+10; if(pct>100)pct=100;
+    pct+=Math.random()*50+30; if(pct>100)pct=100;
     fill.style.width=pct+'%';
     msg.textContent=msgs[Math.min(mi++,msgs.length-1)];
     if(pct>=100){
